@@ -23,9 +23,9 @@ TTS_PATH = f"TTS_tmp.{EXTENSION}"
 
 
 def main(argv):
-    deck_name, collection_path = parse_args(argv)
+    deck_name, collection_path, all_cards = parse_args(argv)
     format_tuples = list_of_tuples_from_iterable(argv, FIELD_ARG_FORMAT_SIZE)
-    make_all_audio(deck_name, collection_path, format_tuples).export(OUT_PATH, format=EXTENSION)
+    make_all_audio(deck_name, collection_path, all_cards, format_tuples).export(OUT_PATH, format=EXTENSION)
 
 
 def list_of_tuples_from_iterable(iterable, size=2):
@@ -36,12 +36,13 @@ def list_of_tuples_from_iterable(iterable, size=2):
 def parse_args(argv):
     deck_name = ""  # default to no deck (will use all decks)
     collection_path = ""  # default to no path (will ask for path with UI)
+    all_cards = False  # default to False (just use today's cards)
 
     opts = None
 
-    usage = "test.py -d <deck_name> -c <collection_path>"
+    usage = "test.py -d <deck_name> -c <collection_path> -a <all_cards>"
     try:
-        opts, _ = getopt.getopt(argv, "hd:c:", ["deck_name=", "collection_path="])
+        opts, _ = getopt.getopt(argv, "hd:c:a:", ["deck_name=", "collection_path=", "all_cards="])
     except getopt.GetoptError:
         print(usage)
         input("Press enter to continue...")
@@ -55,6 +56,8 @@ def parse_args(argv):
             deck_name = arg
         elif opt in ("-c", "--collection_path"):
             collection_path = arg
+        elif opt in ("-a", "--all_cards"):
+            all_cards = arg.lower() in ['true', 't', 'y']
 
     # remove all the non-option based arguments to leave the field triples (field_key audio/text post_silence_dur_milli)
     [(argv.remove(key), argv.remove(value)) for key, value in opts]
@@ -62,10 +65,10 @@ def parse_args(argv):
         print(f"Non-option arguments must come as a multiple of {FIELD_ARG_FORMAT_SIZE}")
         input("Press enter to continue...")
         exit()
-    return deck_name, collection_path
+    return deck_name, collection_path, all_cards
 
 
-def make_all_audio(deck_name, collection_path, format_tuples):
+def make_all_audio(deck_name, collection_path, all_cards, format_tuples):
     tk.Tk().withdraw()
     collection_path = os.path.expandvars(collection_path)
     collection_path = collection_path or filedialog.askopenfilename(title="Choose collection.anki2")
@@ -76,7 +79,7 @@ def make_all_audio(deck_name, collection_path, format_tuples):
 
     init_db(collection_path)
 
-    cards = get_cards(deck_name)
+    cards = get_cards(deck_name, all_cards)
 
     media_path = os.path.dirname(collection_path) + "/collection.media/"
 
@@ -137,7 +140,7 @@ def make_card_audio(card, media_path, format_tuples):
     return card_audio
 
 
-def get_cards(deck_name):
+def get_cards(deck_name, all_cards):
     cards = []
     min_due = None
     for c in db.Cards.select(db.Cards, db.Decks, db.Notes.flds, db.Models) \
@@ -146,10 +149,11 @@ def get_cards(deck_name):
             .join(db.Notes, on=(db.Notes.id == db.Cards.nid)) \
             .join(db.Models, on=(db.Models.id == db.Notes.mid)) \
             .order_by(db.Cards.due):
-        if not min_due:
-            min_due = c.due
-        elif c.due > min_due:
-            break
+        if not all_cards:
+            if not min_due:
+                min_due = c.due
+            elif c.due > min_due:
+                break
         cards.append(dict(zip(c.note.model.flds, c.note.flds)))
 
     return cards
