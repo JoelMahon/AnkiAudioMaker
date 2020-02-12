@@ -1,8 +1,10 @@
 # AnkiAudioMaker
 
-This program was something I made for myself to increasing my repetitions of my Anki decks when I'm out and about, or just not in the mood to stare at a screen. Especially important for me because the app on my phone's OS doesn't work for media - or at least I couldn't get it to work for media.
+This program was something I made for myself to increase my repetitions of my Anki decks when I'm out and about, or just not in the mood to stare at a screen. Especially important for me because the app on my phone's OS doesn't work for media - or at least I couldn't get it to work for media.
 
 What it does in abstract terms is generate an audio file based on a subset of cards' fields.
+
+This script doesn't affect Anki at all, it only reads, never writes. You should still use Anki as you normally would, and only use this as an extra bit of study if you wish.
 
 For example, I can generate a file with all cards from my "Japanese Core 2000 words" deck that are due tomorrow, which will contain each of those cards represented in audio in sequence.
 
