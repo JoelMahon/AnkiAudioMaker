@@ -10,7 +10,7 @@ For example, I can generate a file with all cards from my "Japanese Core 2000 wo
 
 How each card is represented in audio is up to your configuration. I personally have the audio play for the Japanese word, followed by a long pause (to allow time to think), followed by the English answer (using text-to-speech), then a shorter pause.
 
-See [Extra Configuration](README.md#L24) to see how to get the fields you want, in the order you want. You can make one .bat that swaps the prompt and the answer for example. Note: this program uses the notes' fields, this means it has no concept of prompt and answer, as in Anki the notes can be used to generate many cards. This can work poorly with my program, sorry! It's on my TODO list to change to work more aligned to how Anki works.
+See [Extra Configuration](README.md#L26) to see how to get the fields you want, in the order you want. You can make one .bat that swaps the prompt and the answer for example. Note: this program uses the notes' fields, this means it has no concept of prompt and answer, as in Anki the notes can be used to generate many cards. This can work poorly with my program, sorry! It's on my TODO list to change to work more aligned to how Anki works.
 
 ## Set up:
 At some point I may add an executable, but for now you gotta use this the hard way I'm afraid!
