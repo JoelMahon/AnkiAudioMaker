@@ -1,6 +1,6 @@
 ankisync2==0.2.4.1
 beautifulsoup4==4.8.2
-certifi==2019.11.28
+certifi==2022.12.7
 chardet==3.0.4
 Click==7.0
 gTTS==2.1.1
